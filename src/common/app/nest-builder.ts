@@ -5,10 +5,13 @@ import { json } from 'express';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
+import * as Sentry from '@sentry/node';
 
 import { defaultValidationPipeOptions } from '../constant';
 import { CorsConfig } from '../../config/cors';
 import { Winston } from '../../config/winston';
+import { SentryConfig } from '../../config/monitor';
+import { EnvUtil } from '../util';
 
 type SwaggerBuilder = (basePath: string, app: INestApplication) => void;
 
@@ -28,7 +31,7 @@ export class NestBuilder {
   ): Promise<INestApplication> {
     const app = await NestFactory.create<INestApplication>(appModule, {
       logger: WinstonModule.createLogger(
-        process.env.NODE_ENV === 'production'
+        EnvUtil.isProd()
           ? Winston.getProductionConfig(appName)
           : Winston.getDevelopmentConfig(appName),
       ),
@@ -56,6 +59,15 @@ export class NestBuilder {
 
   setDocs(builder: SwaggerBuilder, options: { basePatch: string }): this {
     builder(options.basePatch, this.app);
+    return this;
+  }
+
+  initSentry(): this {
+    const sentryConfig = this.configService.get<SentryConfig>('sentry');
+    Sentry.init({
+      ...sentryConfig,
+      integrations: [new Sentry.Integrations.Http({ tracing: true })],
+    });
     return this;
   }
 
