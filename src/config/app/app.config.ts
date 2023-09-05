@@ -1,6 +1,7 @@
 import { InstanceValidator, IntValidator, StringValidator } from '@app/common';
 import {
   CorsConfig,
+  DatabaseConfig,
   SentryConfig,
   SlackConfig,
   SwaggerConfig,
@@ -16,6 +17,9 @@ export class AppConfig extends BaseConfig {
 
   @InstanceValidator(CorsConfig)
   readonly cors: CorsConfig;
+
+  @InstanceValidator(DatabaseConfig)
+  readonly database: DatabaseConfig;
 
   @InstanceValidator(SwaggerConfig)
   readonly swagger: SwaggerConfig;
