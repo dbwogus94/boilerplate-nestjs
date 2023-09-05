@@ -36,6 +36,12 @@
       ],
       "@app/custom/*": [
         "src/custom/*"
+      ],
+			"@app/entity": [
+        "src/entity"
+      ],
+      "@app/entity/*": [
+        "src/entity/*"
       ]
     }
   }
