@@ -10,6 +10,7 @@ async function bootstrap() {
   return process.env.NODE_ENV === 'production'
     ? await builder //
         .preInitServer({ globalPrifix: '/api' })
+        .initSentry()
         .initServer()
     : await builder
         .preInitServer({ globalPrifix: '/api' })
