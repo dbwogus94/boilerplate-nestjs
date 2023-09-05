@@ -3,8 +3,8 @@ import { NodeOptions } from '@sentry/node';
 
 export class SentryConfig implements NodeOptions {
   @StringValidator()
-  dsn: string;
+  readonly dsn: string;
 
   @NumberValidator()
-  tracesSampleRate: number;
+  readonly tracesSampleRate: number;
 }

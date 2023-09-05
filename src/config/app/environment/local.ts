@@ -26,4 +26,18 @@ export const LocalConfig: AppConfig = {
       },
     },
   },
+
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    // tracesSampleRate: +(process.env.TRACES_SAMPLE_RATE ?? 1),
+    tracesSampleRate: +process.env.TRACES_SAMPLE_RATE,
+  },
+  slack: {
+    serverErrorAlert: {
+      webHooklUrl: process.env.SLACK_WEB_HOOK_URI_BY_SERVER_ERROR_ALERT,
+      channelName: process.env.SLACK_CHANNEL_NAME_BY_SERVER_ERROR_ALERT,
+      description: process.env.SLACK_DESCRIPTION_BY_SERVER_ERROR_ALERT,
+      viewerUrl: process.env.SLACK_VIEWER_URL_BY_SERVER_ERROR_ALERT,
+    },
+  },
 };

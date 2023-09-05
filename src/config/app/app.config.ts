@@ -1,9 +1,4 @@
-import {
-  InstanceValidator,
-  InstanceValidatorOptional,
-  IntValidator,
-  StringValidator,
-} from '@app/common';
+import { InstanceValidator, IntValidator, StringValidator } from '@app/common';
 import {
   CorsConfig,
   SentryConfig,
@@ -25,9 +20,9 @@ export class AppConfig extends BaseConfig {
   @InstanceValidator(SwaggerConfig)
   readonly swagger: SwaggerConfig;
 
-  @InstanceValidatorOptional(SentryConfig)
-  readonly sentry?: SentryConfig;
+  @InstanceValidator(SentryConfig)
+  readonly sentry: SentryConfig;
 
-  @InstanceValidatorOptional(SlackConfig)
-  readonly slack?: SlackConfig;
+  @InstanceValidator(SlackConfig)
+  readonly slack: SlackConfig;
 }

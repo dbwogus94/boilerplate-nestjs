@@ -6,19 +6,19 @@ import {
 
 export class SlackAlertOptions {
   @StringValidator()
-  webHooklUrl: string;
+  readonly webHooklUrl: string;
 
   @StringValidatorOptional()
-  channelName?: string | null;
+  readonly channelName?: string | null;
 
   @StringValidatorOptional()
-  description?: string | null;
+  readonly description?: string | null;
 
   @StringValidatorOptional()
-  viewerUrl?: string | null;
+  readonly viewerUrl?: string | null;
 }
 
 export class SlackConfig {
   @InstanceValidator(SlackAlertOptions)
-  serverErrorAlert: SlackAlertOptions;
+  readonly serverErrorAlert: SlackAlertOptions;
 }
