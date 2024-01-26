@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 import { Request } from 'express';
 
 import { SlackConfig } from '@app/config';
-import { SlackTemplate, Util } from '@app/common';
+import { SlackTemplate, ErrorUtil } from '@app/common';
 
 @Injectable()
 export class SlackSenderInterceptor implements NestInterceptor {
@@ -29,7 +29,7 @@ export class SlackSenderInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap({
         error: (err) =>
-          Util.isServerError(err) && this.sendMessage(err, request),
+          ErrorUtil.isServerError(err) && this.sendMessage(err, request),
       }),
     );
   }
