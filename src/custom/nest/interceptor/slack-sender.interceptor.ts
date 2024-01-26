@@ -5,20 +5,25 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IncomingWebhook } from '@slack/client';
+import { IncomingWebhook } from '@slack/webhook';
 import { tap } from 'rxjs/operators';
 import { Request } from 'express';
 
 import { SlackConfig } from '@app/config';
 import { SlackTemplate, ErrorUtil } from '@app/common';
+import { CustomLoggerService } from '../module';
 
 @Injectable()
 export class SlackSenderInterceptor implements NestInterceptor {
   private readonly webhook: IncomingWebhook;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly logger: CustomLoggerService,
+  ) {
     const { serverErrorAlert } = this.config.get<SlackConfig>('slack');
     this.webhook = new IncomingWebhook(serverErrorAlert.webHooklUrl);
+    this.logger.setTarget('SlackSenderInterceptor');
   }
 
   intercept(context: ExecutionContext, next: CallHandler) {
@@ -34,14 +39,13 @@ export class SlackSenderInterceptor implements NestInterceptor {
     );
   }
 
-  private sendMessage(error: Error, request: Request) {
+  private async sendMessage(error: Error, request: Request) {
     const { serverErrorAlert } = this.config.get<SlackConfig>('slack');
     const appName: string = this.config.get('appName');
 
     const message = SlackTemplate.errorTemplate({
       error,
       request,
-      appType: this.config.get('appType'),
       header: `${appName}-API-Server 버그 발생`,
       type: 'Error',
       trigger: 'SlackInterceptor',
@@ -50,7 +54,9 @@ export class SlackSenderInterceptor implements NestInterceptor {
         viewerText: 'Sentry에서 확인',
       },
     });
-    return this.webhook.send(message);
+    await this.webhook
+      .send(message) //
+      .catch((error) => this.logger.error(error));
   }
 
   private removeSensitiveProperties(request: Request): Request {
