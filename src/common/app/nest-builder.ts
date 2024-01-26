@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
 import * as Sentry from '@sentry/node';
 
-import { defaultValidationPipeOptions } from '../constant';
+import { defaultGlobalValidationPipeOptions } from '../constant';
 import { CorsConfig } from '../../config/cors';
 import { Winston } from '../../config/winston';
 import { SentryConfig } from '../../config/monitor';
@@ -73,7 +73,7 @@ export class NestBuilder {
 
   async initServer(): Promise<INestApplication> {
     await this.app //
-      .useGlobalPipes(new ValidationPipe(defaultValidationPipeOptions))
+      .useGlobalPipes(new ValidationPipe(defaultGlobalValidationPipeOptions))
       .listen(this.configService.get('port'));
 
     return this.app;
