@@ -12,34 +12,34 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions;
+type ObjectValidatorOptions = UnionValidatorDefaultOptions;
 
 export function ObjectValidator(
-  options: Options = {},
+  options: ObjectValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
 export function ObjectValidatorOptional(
-  options: Options = {},
+  options: ObjectValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 
 function createDecorators(
-  options: Options = {},
+  options: ObjectValidatorOptions = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] {
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
     IsObject(validationOptions),
     Type(() => Object),

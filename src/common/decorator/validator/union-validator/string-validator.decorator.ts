@@ -9,50 +9,59 @@ import {
   MaxLength,
   MinLength,
   ValidationOptions,
+  isString,
 } from 'class-validator';
 
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions & {
+type StringValidatorOption = UnionValidatorDefaultOptions & {
   maxLength?: number;
   minLength?: number;
 };
 
 export function StringValidator(
-  options: Options = {},
+  options: StringValidatorOption = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
 export function StringValidatorOptional(
-  options: Options = {},
+  options: StringValidatorOption = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 
 function createDecorators(
-  options: Options = {},
+  options: StringValidatorOption = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] {
   const { maxLength, minLength } = options;
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
-    IsString(validationOptions),
     Type(() => String),
-    !isEach && maxLength && MaxLength(maxLength, validationOptions),
-    !isEach && minLength && MinLength(minLength, validationOptions),
-    !isEach && Transform(({ value }) => value && value.trim()),
+    Transform(({ value }) => trim(value)),
+    IsString(validationOptions),
+    maxLength && MaxLength(maxLength, validationOptions),
+    minLength && MinLength(minLength, validationOptions),
     isEach && arrayMaxSize && ArrayMaxSize(arrayMaxSize),
     isEach && arrayMinSize && ArrayMinSize(arrayMinSize),
   ]);
+}
+
+function trim(val: unknown) {
+  return isString(val)
+    ? val.trim()
+    : Array.isArray(val) && val.every(isString)
+    ? val.map((str) => str.trim())
+    : undefined;
 }

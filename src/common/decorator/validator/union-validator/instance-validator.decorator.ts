@@ -12,37 +12,37 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions;
+type InstanceValidatorOptions = UnionValidatorDefaultOptions;
 
 export function InstanceValidator(
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(entity, options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(entity, options, validationOptions, [IsNotEmpty()]),
   );
 }
 
 export function InstanceValidatorOptional(
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(entity, options, validationOptions, [IsOptional]),
+    ...createDecorators(entity, options, validationOptions, [IsOptional()]),
   );
 }
 
 const createDecorators = (
   entity: Type,
-  options: Options = {},
+  options: InstanceValidatorOptions = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] => {
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
     ToType(() => entity),
     ValidateNested(validationOptions),
