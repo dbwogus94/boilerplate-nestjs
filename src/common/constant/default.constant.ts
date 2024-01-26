@@ -1,4 +1,5 @@
-export const DefalutAppName = 'Nestjs-API';
+export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Test';
+export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
 /**
  * nestjs의 Global ValidationPipe에 적용할 옵션
