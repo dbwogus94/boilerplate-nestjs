@@ -1,9 +1,20 @@
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { SwaggerOptions } from '@app/config';
+import { SwaggerConfig, SwaggerOptions } from '@app/config';
 
-export function buildSwagger(
+export function swaggerbuilder(basePath: string, app: INestApplication): void {
+  const configService = app.get(ConfigService);
+  const swaggerConfig = configService.get<SwaggerConfig>('swagger');
+  const { apis } = swaggerConfig;
+  buildAllServiceSwagger(`${basePath}`);
+  function buildAllServiceSwagger(adminPath: string) {
+    buildSwagger(adminPath, app, apis);
+  }
+}
+
+function buildSwagger(
   path: string,
   app: INestApplication,
   options: SwaggerOptions,

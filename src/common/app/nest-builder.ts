@@ -13,7 +13,7 @@ import { Winston } from '../../config/winston';
 import { SentryConfig } from '../../config/monitor';
 import { EnvUtil } from '../util';
 
-type SwaggerBuilder = (basePath: string, app: INestApplication) => void;
+type SwaggerBuilderType = (basePath: string, app: INestApplication) => void;
 
 export class NestBuilder {
   private app: INestApplication;
@@ -56,7 +56,7 @@ export class NestBuilder {
     return this;
   }
 
-  setDocs(builder: SwaggerBuilder, options: { basePatch: string }): this {
+  setDocs(builder: SwaggerBuilderType, options: { basePatch: string }): this {
     builder(options.basePatch, this.app);
     return this;
   }
