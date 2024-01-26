@@ -55,7 +55,7 @@ export const ProdConfig: AppConfig = {
 
   sentry: {
     dsn: process.env.SENTRY_DSN,
-    tracesSampleRate: +process.env.TRACES_SAMPLE_RATE,
+    tracesSampleRate: +process.env.SENTRY_TRACES_SAMPLE_RATE,
   },
   slack: {
     serverErrorAlert: {

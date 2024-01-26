@@ -1,4 +1,4 @@
-export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Test';
+export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Nest-API';
 export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
 /**

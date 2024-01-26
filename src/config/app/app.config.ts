@@ -1,12 +1,9 @@
 import { InstanceValidator, IntValidator, StringValidator } from '@app/common';
-import {
-  CorsConfig,
-  DatabaseConfig,
-  SentryConfig,
-  SlackConfig,
-  SwaggerConfig,
-} from '@app/config';
 import { BaseConfig } from './base.config';
+import { CorsConfig } from '../cors';
+import { DatabaseConfig } from '../database';
+import { SwaggerConfig } from '../swagger';
+import { SentryConfig, SlackConfig } from '../monitor';
 
 export class AppConfig extends BaseConfig {
   @StringValidator()

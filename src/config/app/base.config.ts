@@ -16,7 +16,7 @@ export class BaseConfig {
     const errors = validateSync(klass);
 
     if (errors.length > 0) {
-      console.error(
+      Logger.error(
         `[BaseConfig] Error ${Logger.getTimestamp()} \t` +
           errors.map((v) => v.toString()).toString(),
       );
