@@ -1,4 +1,4 @@
-export const DEFALUT_APP_NAME = process.env.APP_NAME ?? 'Nest-API';
+export const DEFALUT_APP_NAME = 'Nest-API';
 export const USER_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
 
 /**
@@ -34,7 +34,8 @@ export const defaultGlobalValidationPipeOptions = {
  * @Url [class-transform | source code](https://github.com/typestack/class-transformer/blob/develop/src/interfaces/class-transformer-options.interface.ts)
  */
 export const defaultPlainToInstanceOptions = {
-  enableImplicitConversion: true,
+  // Note: 묵시적 형변환 옵션을 끄고, @Type 데코레이터를 사용.
+  enableImplicitConversion: false,
   exposeUnsetFields: false,
   excludeExtraneousValues: true,
 };
