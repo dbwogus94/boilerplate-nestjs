@@ -6,20 +6,22 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "1": " ------------------------------------------------------ [ nest cli ] ------------------------------------------------------ ",
+    "build": "nest build",
     "start": "nest start",
     "start:dev": "dotenv -e ./env/local.env -- nest start --watch",
     "start:debug": "dotenv -e ./env/local.env -- nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "2": " ------------------------------------------------------ [ jest cli ] ------------------------------------------------------ ",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-		"": " ------------------------------------------------------ [ typeorm cli ] ------------------------------------------------------ ",
-		"typeorm": "dotenv -e ./env/local.env -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
+    "3": " ------------------------------------------------------ [ typeorm cli ] ------------------------------------------------------ ",
+    "typeorm": "dotenv -e ./env/local.env -- ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
     "db:migrate:create": "npm run typeorm -- migration:create ./migrations/local/$npm_config_name",
     "db:migrate:generate": "npm run typeorm --  migration:generate  -d ./migrations/orm.config.ts ./migrations/local/$npm_config_name",
     "db:migrate:up": "npm run typeorm -- migration:run  -d ./migrations/orm.config.ts ",
@@ -33,24 +35,23 @@
     "@nestjs/swagger": "^7.1.10",
     "@nestjs/typeorm": "^10.0.0",
     "@sentry/node": "^7.67.0",
-    "@slack/client": "^5.0.2",
+    "@slack/webhook": "^7.0.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "date-fns": "^2.30.0",
     "helmet": "^7.0.0",
-    "morgan": "^1.10.0",
     "nest-raven": "^10.0.0",
     "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
-    "winston": "^3.10.0",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@slack/types": "^2.11.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/morgan": "^1.9.5",
@@ -93,7 +94,7 @@
       "^@app/common(|/.*)$": "<rootDir>/src/common/$1",
       "^@app/config(|/.*)$": "<rootDir>/src/config/$1",
       "^@app/custom(|/.*)$": "<rootDir>/src/custom/$1",
-			"^@app/entity(|/.*)$": "<rootDir>/src/entity/$1"
+      "^@app/entity(|/.*)$": "<rootDir>/src/entity/$1"
     }
   }
 }

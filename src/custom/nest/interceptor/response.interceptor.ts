@@ -10,7 +10,7 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import 'reflect-metadata';
 
-import { errorMessage } from '@app/common';
+import { errorMessage, successMessage } from '@app/common';
 
 export interface Response<T> {
   data: T;
@@ -20,8 +20,10 @@ export interface Response<T> {
 export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   // eslint-disable-next-line @typescript-eslint/ban-types
   private getSwaggerDescription(target: Function) {
-    // @nestjs/swagger 데코레이터의 메타테이터에 접근
+    // Note: @nestjs/swagger 데코레이터의 메타테이터에 접근
     const matadata = Reflect.getMetadata('swagger/apiResponse', target);
+    if (!matadata) return successMessage.S200APP001;
+
     const statusCode = Object.keys(matadata)[0];
     return matadata[statusCode]['description'];
   }

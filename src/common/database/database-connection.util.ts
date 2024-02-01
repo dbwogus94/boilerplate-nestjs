@@ -14,9 +14,9 @@ function createConnectionOptions(
   const options = config.get<DatabaseConfig>('database');
   return {
     ...options,
-    // TODO: DatabaseLogger는 CustomLogger를 의존하기 때문에 CustomLoggerModule이 로드된 이후 생성해야 한다.
+    // Note: DatabaseLogger는 CustomLogger를 의존하기 때문에 CustomLoggerModule이 로드된 이후 생성해야 한다.
     logger: new DatabaseLogger(logger),
-    // TODO: CustomNamingStrategy는 Typorm의 DefaultNamingStrategy를 상속한다. 때문에 모듈 로드 시점에 생성해야 한다.
+    // Note: CustomNamingStrategy는 Typorm의 DefaultNamingStrategy를 상속한다. 때문에 모듈 로드 시점에 생성해야 한다.
     namingStrategy: new CustomNamingStrategy(),
   };
 }

@@ -14,41 +14,41 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions & {
+type IntValidatorOptions = UnionValidatorDefaultOptions & {
   max?: number;
   min?: number;
 };
 
 export function IntValidator(
-  options: Options = {},
+  options: IntValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
 export function IntValidatorOptional(
-  options: Options = {},
+  options: IntValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 
 function createDecorators(
-  options: Options = {},
+  options: IntValidatorOptions = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] {
   const { max, min } = options;
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
-    IsInt(validationOptions),
     Type(() => Number),
+    IsInt(validationOptions),
     max && Max(max, validationOptions),
     min && Min(min, validationOptions),
     isEach && arrayMaxSize && ArrayMaxSize(arrayMaxSize),

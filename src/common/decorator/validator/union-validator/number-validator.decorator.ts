@@ -14,44 +14,44 @@ import {
 import { Util } from '../../../util';
 import { UnionValidatorDefaultOptions } from './type';
 
-type Options = UnionValidatorDefaultOptions & {
+type NumberValidatorOptions = UnionValidatorDefaultOptions & {
   max?: number;
   min?: number;
   maxDecimalPlaces?: number;
 };
 
 export function NumberValidator(
-  options: Options = {},
+  options: NumberValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsNotEmpty]),
+    ...createDecorators(options, validationOptions, [IsNotEmpty()]),
   );
 }
 
 export function NumberValidatorOptional(
-  options: Options = {},
+  options: NumberValidatorOptions = {},
   validationOptions?: ValidationOptions,
 ): PropertyDecorator {
   return applyDecorators(
-    ...createDecorators(options, validationOptions, [IsOptional]),
+    ...createDecorators(options, validationOptions, [IsOptional()]),
   );
 }
 
 function createDecorators(
-  options: Options = {},
+  options: NumberValidatorOptions = {},
   validationOptions: ValidationOptions = {},
   appendDecorators: PropertyDecorator[],
 ): PropertyDecorator[] {
   const { max, min, maxDecimalPlaces } = options;
   const { arrayMaxSize, arrayMinSize } = options;
   const isEach = validationOptions?.each;
-  return Util.filterNotNil([
+  return Util.filterFalsy([
     ...appendDecorators,
     IsNumber({ maxDecimalPlaces: maxDecimalPlaces }, validationOptions),
     Type(() => Number),
-    max && Max(max),
-    min && Min(min),
+    max && Max(max, validationOptions),
+    min && Min(min, validationOptions),
     isEach && arrayMaxSize && ArrayMaxSize(arrayMaxSize),
     isEach && arrayMinSize && ArrayMinSize(arrayMinSize),
   ]);
