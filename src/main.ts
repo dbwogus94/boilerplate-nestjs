@@ -1,6 +1,6 @@
 import { WinstonModule } from 'nest-winston';
 
-import { EnvUtil, NestBuilder, WinstonUtil, swaggerbuilder } from '@app/common';
+import { EnvUtil, NestBuilder, WinstonUtil, buildSwagger } from '@app/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -21,7 +21,7 @@ async function bootstrap() {
         .runServer()
     : await builder
         .setMiddleware({ globalPrefix: '/api', httpLogging: true })
-        .setSwagger(swaggerbuilder, { docsPath: '/docs' })
+        .setSwagger(buildSwagger, { docsPath: '/docs' })
         .runServer();
 }
 

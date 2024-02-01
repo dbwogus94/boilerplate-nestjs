@@ -1,2 +1,2 @@
-export * from './swagger-builder';
+export * from './build-swagger';
 export * from './decorator';

@@ -4,12 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { SwaggerConfig, SwaggerOptions } from '@app/config';
 
-export function swaggerbuilder(basePath: string, app: INestApplication): void {
+export function buildSwagger(basePath: string, app: INestApplication): void {
   const configService = app.get(ConfigService);
   const swaggerConfig = configService.get<SwaggerConfig>('swagger');
   const { apis } = swaggerConfig;
   // NOTE: 모든 API 노출
-  buildSwagger(basePath, app, apis);
+  setSwagger(basePath, app, apis);
 }
 
 /**
@@ -21,15 +21,14 @@ export function swaggerbuilder(basePath: string, app: INestApplication): void {
  * @Url [nestjs 공식 문서 | openapi](https://docs.nestjs.com/openapi/introduction)
  * ```
  * // NOTE: 모든 API 노출
- * buildSwagger(/docs, app, apis, [UserModule, UserProductModule]);
+ * setSwagger('/docs', app, apis, [UserModule, UserProductModule]);
  * // NOTE: user 관련 API만 노출
- * buildSwagger(/docs/user, app, user, [UserModule, UserProductModule]);
+ * setSwagger('/docs/user', app, user, [UserModule, UserProductModule]);
  * // NOTE: admin 관련 API만 노출
- * buildSwagger(/docs/admin, app, admin, [AdminModule, AdminProductModule]);
- *
+ * setSwagger('/docs/admin', app, admin, [AdminModule, AdminProductModule]);
  * ```
  */
-function buildSwagger(
+function setSwagger(
   path: string,
   app: INestApplication,
   options: SwaggerOptions,

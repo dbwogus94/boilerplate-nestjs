@@ -14,20 +14,24 @@ import helmet from 'helmet';
 import { CorsConfig, SentryConfig } from '@app/config';
 import { httpLogger } from '@app/custom';
 import { defaultGlobalValidationPipeOptions } from '../constant';
-import { swaggerbuilder } from '../swagger';
+import { buildSwagger } from '../swagger';
 
 type AppCreateOption = {
   appModule: Type<any>;
 } & Pick<NestApplicationOptions, 'logger'>;
-type SwaggerBuilderType = typeof swaggerbuilder;
+type BuildSwaggerType = typeof buildSwagger;
 type SetMiddlewareOptions = { httpLogging?: boolean; globalPrefix?: string };
 type SetSwaggerOptions = { docsPath: string };
 
 export class NestBuilder {
+  private _isRunning: boolean;
+
   private constructor(
     private readonly _app: INestApplication,
     private readonly _configService: ConfigService,
-  ) {}
+  ) {
+    this._isRunning = false;
+  }
 
   /**
    * AppModule 주입받아 Nest APP을 생성한다.
@@ -51,10 +55,13 @@ export class NestBuilder {
       .useGlobalPipes(new ValidationPipe(defaultGlobalValidationPipeOptions))
       .listen(this._configService.get('port'));
 
+    this._isRunning = true;
     return this._app;
   }
 
-  setSwagger(builder: SwaggerBuilderType, options: SetSwaggerOptions): this {
+  setSwagger(builder: BuildSwaggerType, options: SetSwaggerOptions): this {
+    this.throwErrorIfRunning();
+
     builder(options.docsPath, this._app);
     return this;
   }
@@ -67,6 +74,8 @@ export class NestBuilder {
    * @returns
    */
   setMiddleware(options: SetMiddlewareOptions = {}): this {
+    this.throwErrorIfRunning();
+
     if (!!options.httpLogging) {
       const logger = this._app.get(Logger);
       this._app.use(httpLogger(logger));
@@ -87,11 +96,18 @@ export class NestBuilder {
 
   initSentry(): this {
     const sentryConfig = this._configService.get<SentryConfig>('sentry');
-
     Sentry.init({
       ...sentryConfig,
       integrations: [new Sentry.Integrations.Http({ tracing: true })],
     });
     return this;
+  }
+
+  private throwErrorIfRunning() {
+    try {
+      if (this._isRunning) throw new Error('Cannot set up the app after Run');
+    } catch (error) {
+      this._app.get(Logger).error(error);
+    }
   }
 }
