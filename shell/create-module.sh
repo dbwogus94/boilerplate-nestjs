@@ -22,7 +22,7 @@ nest g cl $1.repository --no-spec
 mv $1.repository/* ./
 rm -r $1.repository
 
-## 2. make document dir
+## 2. create document dir
 mkdir document
 touch document/index.ts
 ## document/document.decorator.ts 생성
@@ -42,11 +42,14 @@ controller_elements=(
 for element in "${controller_elements[@]}"; do
     echo "$element"
 done > document/document.decorator.ts
+echo "export * from './document.decorator';" >> document/index.ts
 
 
-## 3. make domain dir
+## 3. create domain dir
 mkdir domain
 touch domain/index.ts
+
+### create $1.domain.ts
 domain_class=$(to_upper_camel "$1")
 domain_elements=(
   "import { ${domain_class}Entity } from '@app/entity';"
@@ -63,6 +66,26 @@ domain_elements=(
 for element in "${domain_elements[@]}"; do
     echo "$element"
 done > domain/$1.domain.ts
+echo "export * from './$1.domain';" >> domain/index.ts
+
+### create $1.domain.ts
+domain_mapper_class=$(to_upper_camel "$1")
+domain_mapper_elements=(
+  "import { ${domain_mapper_class}Entity } from '@app/entity';"
+  "import { $domain_mapper_class } from './$1.domain';"
+  ""
+  "export class ${domain_mapper_class}EntityMapper {"
+  "  static toDomain(entity: ${domain_mapper_class}Entity): $domain_mapper_class {"
+  "    return new ${domain_mapper_class}({ ...entity }) //"
+  "      .setBase(entity.id, entity.createdAt, entity.updatedAt);"
+  "  }"
+  "}"
+)
+for element in "${domain_mapper_elements[@]}"; do
+    echo "$element"
+done > domain/$1-entity-mapper.domain.ts
+echo "export * from './$1-entity-mapper.domain';" >> domain/index.ts
+
 
 
 ## 4. make dto dir
