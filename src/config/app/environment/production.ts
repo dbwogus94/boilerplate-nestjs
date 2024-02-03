@@ -1,10 +1,17 @@
-import { DEFALUT_APP_NAME } from '@app/common';
+import { DEFALUT_APP_NAME, USER_ACCESS_TOKEN } from '@app/common';
 import { AppConfig } from '../app.config';
 
 export const ProdConfig: AppConfig = {
   appName: process.env.APP_NAME ?? DEFALUT_APP_NAME,
   port: +process.env.PORT,
   cors: { origin: process.env.CORS_ORIGIN },
+
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN,
+    issuer: process.env.JWT_ISSUER,
+    subject: process.env.JWT_SUBJECT,
+  },
 
   database: {
     type: 'postgres',
@@ -40,7 +47,7 @@ export const ProdConfig: AppConfig = {
         version: process.env.SWAGGER_APIS_VERSION,
       },
       securityConfig: {
-        name: 'Access-Token',
+        name: USER_ACCESS_TOKEN,
         securityOptions: {
           type: 'http',
           scheme: 'bearer',
