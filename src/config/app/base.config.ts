@@ -12,7 +12,9 @@ export class BaseConfig {
     this: Constructor,
     record: DeepPartial<T>,
   ): Record<string, any> {
-    const klass = plainToInstance(this, record);
+    const klass = plainToInstance(this, record, {
+      exposeDefaultValues: true,
+    });
     const errors = validateSync(klass);
 
     if (errors.length > 0) {
