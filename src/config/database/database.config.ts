@@ -40,33 +40,33 @@ export class DatabaseConfig implements PostgresConnectionOptions {
   @StringValidator()
   readonly database: string;
 
-  @BooleanValidator()
-  readonly ssl = false;
-
   @IsNotEmpty()
   @IsArray()
   // eslint-disable-next-line @typescript-eslint/ban-types
-  readonly entities: MixedList<Function | string | EntitySchema> = [
+  readonly entities?: MixedList<Function | string | EntitySchema> = [
     `${__dirname}/../**/*.entity{.ts,.js}`,
   ];
 
   @StringValidator({}, { each: true })
-  readonly migrations: string[] = [`${__dirname}/../migrations/**/*{.ts,.js}`];
+  readonly migrations?: string[] = [`${__dirname}/../migrations/**/*{.ts,.js}`];
 
   @BooleanValidator()
-  readonly synchronize: boolean = false;
+  readonly ssl?: boolean = false;
 
   @BooleanValidator()
-  readonly dropSchema: boolean = false;
+  readonly synchronize?: boolean = false;
 
   @BooleanValidator()
-  readonly migrationsRun: boolean = false;
+  readonly dropSchema?: boolean = false;
+
+  @BooleanValidator()
+  readonly migrationsRun?: boolean = false;
 
   @StringValidator()
-  readonly migrationsTableName = 'migrations';
+  readonly migrationsTableName?: string = 'migrations';
 
   @IsNotEmpty()
-  readonly logging: LoggerOptions = 'all';
+  readonly logging?: LoggerOptions = 'all';
 
   @IntValidator()
   readonly maxQueryExecutionTime: number; // 지연 로그 출력 시간(ms), ex) 10000 = 10초 이상 쿼리 로그 출력

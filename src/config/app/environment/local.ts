@@ -22,12 +22,7 @@ export const LocalConfig: AppConfig = {
     database: process.env.DATABASE_NAME,
     logging: process.env.DATABASE_LOG as any,
     entities: [`${__dirname}/../../../entity/**/*.entity{.ts,.js}`],
-    migrations: [`${__dirname}/**/migrations/**/*{.ts,.js}`],
-    dropSchema: false,
-    synchronize: false,
-    ssl: false,
     migrationsTableName: 'migrations',
-    migrationsRun: false,
 
     /* DB 가용성에 따라 변경 해야한다. */
     maxQueryExecutionTime:
