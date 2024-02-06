@@ -1,4 +1,3 @@
-import { ApiControllerDocument, GetUserInfoDecorator } from '@app/common';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -10,6 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+
+import { ApiControllerDocument, GetUserInfoDecorator } from '@app/common';
 import { DocumentHelper } from './document/document.decorator';
 import {
   GetUserResponseDTO,
