@@ -12,7 +12,10 @@ export class BaseConfig {
     this: Constructor,
     record: DeepPartial<T>,
   ): Record<string, any> {
-    const klass = plainToInstance(this, record);
+    const klass = plainToInstance(this, record, {
+      // Note: 생성된 인스턴스가 default 데이터를 제거하지 않고 사용하도록 설정
+      exposeDefaultValues: true,
+    });
     const errors = validateSync(klass);
 
     if (errors.length > 0) {

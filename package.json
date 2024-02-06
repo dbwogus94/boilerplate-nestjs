@@ -25,12 +25,15 @@
     "db:migrate:create": "npm run typeorm -- migration:create ./migrations/local/$npm_config_name",
     "db:migrate:generate": "npm run typeorm --  migration:generate  -d ./migrations/orm.config.ts ./migrations/local/$npm_config_name",
     "db:migrate:up": "npm run typeorm -- migration:run  -d ./migrations/orm.config.ts ",
-    "db:migrate:down": "npm run typeorm -- migration:revert  -d ./migrations/orm.config.ts "
+    "db:migrate:down": "npm run typeorm -- migration:revert  -d ./migrations/orm.config.ts ",
+    "db:drop": "npm run typeorm -- schema:drop -d ./migrations/orm.config.ts",
+    "db:sync": "npm run typeorm -- schema:sync -d ./migrations/orm.config.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.1",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.10",
     "@nestjs/typeorm": "^10.0.0",

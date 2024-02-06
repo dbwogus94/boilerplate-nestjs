@@ -32,8 +32,12 @@ NODE_ENV=local
 TZ=Asia/Seoul
 PORT=3000
 CORS_ORIGIN=*
-#CORS_ORIGIN=http://naver.com,http://map.naver.com,http://localhost:3000 
 APP_NAME='API'
+
+JWT_SECRET=jwt-secret
+JWT_EXPIRES_IN=7d
+JWT_ISSUER=Nest-API
+JWT_SUBJECT=user-info
 
 ## TypeORM
 DATABASE_TYPE=postgres

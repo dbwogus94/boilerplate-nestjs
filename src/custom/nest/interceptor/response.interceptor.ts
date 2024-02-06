@@ -22,7 +22,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   private getSwaggerDescription(target: Function) {
     // Note: @nestjs/swagger 데코레이터의 메타테이터에 접근
     const matadata = Reflect.getMetadata('swagger/apiResponse', target);
-    if (!matadata) return successMessage.S200APP001;
+    if (!matadata) return successMessage.S200_APP_001;
 
     const statusCode = Object.keys(matadata)[0];
     return matadata[statusCode]['description'];
