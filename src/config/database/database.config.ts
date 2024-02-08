@@ -1,7 +1,5 @@
-import { EntitySchema, LoggerOptions, MixedList } from 'typeorm';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { IsArray, IsNotEmpty } from 'class-validator';
-import { PoolConfig } from 'pg';
+import { EntitySchema, LoggerOptions, MixedList } from 'typeorm';
 
 import {
   BooleanValidator,
@@ -9,21 +7,34 @@ import {
   IntValidator,
   StringValidator,
 } from '@app/common';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
-class PoolOptions implements PoolConfig {
-  @IntValidator()
-  readonly statement_timeout: number; // 쿼리 강제 취소 시간(ms), ex) 60000 = 1분 이상 쿼리 강제 취소
+import { PoolOptions as Mysql2PoolOptions } from 'mysql2';
+
+/**
+ * mysql2 connection pool option
+ * @see [mysql2 공식문서](https://sidorares.github.io/node-mysql2/docs#using-connection-pools)
+ */
+class PoolOptions implements Mysql2PoolOptions {
+  @BooleanValidator()
+  waitForConnections? = true; // true: 최대 커넥션을 모두 소비하면 요청을 대기열에 넣는다.
 
   @IntValidator()
-  readonly min: number; // 최소 커넥션, ex) 5 = 커넥션 풀에 최소 5개 커넥션 유지
+  idleTimeout: number; // 대기열에 들어간 쿼리 강제 취소 시간 '0'이면 무제한. ex) 60000 = 1분 이상 쿼리 강제 취소
 
   @IntValidator()
-  readonly max: number; // 최대 커넥션(기본 10개), ex) 30 = 커넥션 풀에 최대 30개 커넥션 유지
+  connectionLimit: number; //
+
+  @IntValidator()
+  maxIdle: number; // 대기열에 들어갈 최대 커넥션 수 (Default: same as `connectionLimit`)
 }
 
-export class DatabaseConfig implements PostgresConnectionOptions {
+export class DatabaseConfig implements MysqlConnectionOptions {
   @StringValidator()
-  readonly type = 'postgres' as const;
+  readonly type = 'mysql' as const;
+
+  @StringValidator()
+  readonly connectorPackage = 'mysql2' as const;
 
   @StringValidator()
   readonly host: string;
@@ -63,7 +74,7 @@ export class DatabaseConfig implements PostgresConnectionOptions {
   readonly migrationsRun?: boolean = false;
 
   @StringValidator()
-  readonly migrationsTableName?: string = 'migrations';
+  readonly migrationsTableName?: string = 'migrations' as const;
 
   @IsNotEmpty()
   readonly logging?: LoggerOptions = 'all';
