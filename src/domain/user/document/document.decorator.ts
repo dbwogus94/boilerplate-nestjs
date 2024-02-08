@@ -33,12 +33,20 @@ const decorators: Record<API_DOC_TYPE, Function> = {
         type: GetUserResponseDTO,
       }),
     ),
+  patchUser: () =>
+    applyDecorators(
+      ApiAuthDocument(USER_ACCESS_TOKEN),
+      ApiOperation({ summary: '유저 수정' }),
+      ApiNoContentResponse({
+        description: successMessage.S204_USER_001,
+      }),
+    ),
   deleteUser: () =>
     applyDecorators(
       ApiAuthDocument(USER_ACCESS_TOKEN),
       ApiOperation({ summary: '유저 제거' }),
       ApiNoContentResponse({
-        description: successMessage.S204_USER_001,
+        description: successMessage.S204_USER_002,
       }),
     ),
 };

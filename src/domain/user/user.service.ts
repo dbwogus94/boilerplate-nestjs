@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { AuthServiceUseCase } from '../auth/auth.service';
 import {
   GetUserResponseDTO,
+  PatchUserRequestDTO,
   PostUserRequestDTO,
   PostUserResponseDTO,
 } from './dto';
@@ -15,8 +16,11 @@ export abstract class UserServiceUseCase {
   abstract createUser(
     postDto: PostUserRequestDTO,
   ): Promise<PostUserResponseDTO>;
-
   abstract getUser(userId: number): Promise<GetUserResponseDTO>;
+  abstract updateUser(
+    userId: number,
+    postDto: PatchUserRequestDTO,
+  ): Promise<void>;
   abstract softRemoveUser(userId: number): Promise<void>;
 }
 
@@ -38,14 +42,19 @@ export class UserService extends UserServiceUseCase {
     await queryRunner.startTransaction();
     try {
       const txUserRepo = this.userRepo.createTransactionRepo(manager);
-      const newUser = await txUserRepo.createUser(postDto);
+      const newUser = await txUserRepo.createOne(postDto);
 
-      const token = this.authService.issueToken({ id: newUser.id });
-      const nickname = newUser.generateNickname().nickname;
-      await txUserRepo.updateProperty(newUser.id, { token, nickname });
+      const token = this.authService.issueToken({
+        id: newUser.id,
+      });
+      const nickname = postDto.nickname ?? newUser.generateNickname().nickname;
+      const updateUser = await txUserRepo.updateOne(newUser, {
+        token,
+        nickname,
+      });
 
       await queryRunner.commitTransaction();
-      return { nickname, token };
+      return Util.toInstance(PostUserResponseDTO, updateUser.props);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -60,6 +69,15 @@ export class UserService extends UserServiceUseCase {
     return Util.toInstance(GetUserResponseDTO, {
       ...user.props,
     });
+  }
+
+  async updateUser(
+    userId: number,
+    postDto: PatchUserRequestDTO,
+  ): Promise<void> {
+    const user = await this.userRepo.findOneByPK(userId);
+    if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
+    await this.userRepo.updateOneBy(userId, { ...postDto });
   }
 
   async softRemoveUser(userId: number): Promise<void> {
