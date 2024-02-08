@@ -2,7 +2,8 @@ import { CustomNamingStrategy } from '@app/common';
 import { DataSource } from 'typeorm';
 
 export default new DataSource({
-  type: 'postgres',
+  type: 'mysql',
+  connectorPackage: 'mysql2',
   namingStrategy: new CustomNamingStrategy(),
   host: process.env.DATABASE_HOST,
   port: +process.env.DATABASE_PORT,

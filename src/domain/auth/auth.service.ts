@@ -6,7 +6,7 @@ import { JwtConfig } from '@app/config';
 import { UserInfo } from '@app/common';
 import { UserRepositoryPort } from '../user/user.repository';
 
-type JwtPayload = Pick<UserInfo, 'id'>;
+type JwtPayload = Pick<UserInfo, 'uid' | 'id'>;
 
 export abstract class AuthServiceUseCase {
   abstract decodeToken(token: string): JwtPayload | null;
@@ -56,10 +56,10 @@ export class AuthService extends AuthServiceUseCase {
   }
 
   async isValid(userInfo: UserInfo): Promise<boolean> {
-    const user = await this.userRepository.findOneByPK(userInfo.id);
+    const user = await this.userRepository.findOneByPK(userInfo.uid);
     if (!user) return false;
     if (user.token !== userInfo.jwt) return false;
-    await this.userRepository.updateOneBy(user.id, {
+    await this.userRepository.updateOneBy(user.uid, {
       accessedAt: new Date(),
     });
     return true;

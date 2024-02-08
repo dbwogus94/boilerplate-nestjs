@@ -1,4 +1,5 @@
-import { EntityManager, EntityTarget, Repository } from 'typeorm';
+import { DeepPartial, EntityManager, EntityTarget, Repository } from 'typeorm';
+import { uuidv7 } from 'uuidv7';
 
 export class BaseRepository<Entity> extends Repository<Entity> {
   constructor(
@@ -23,5 +24,53 @@ export class BaseRepository<Entity> extends Repository<Entity> {
       throw new Error('Instance is not CustomRepository child.');
     }
     return new (constructor as any)(manager);
+  }
+
+  /**
+   * uuidv7 라이브러리를 사용하여 uuid 생성
+   * @returns
+   */
+  generateUid(): string {
+    return uuidv7();
+  }
+
+  /**
+   * super.create를 override한 메서드로 uid를 생성한다.
+   * - param에 uid가 있으면 parma의 uid를 사용한다.
+   * - 새 엔티티 인스턴스를 생성합니다.
+   */
+  override create(): Entity;
+  /**
+   * super.create를 override한 메서드로 uid를 생성한다.
+   * - 새 엔티티를 생성하고 지정된 객체의 모든 엔티티 속성을 새 엔티티로 복사합니다.
+   * - param에 uid가 있으면 parma의 uid를 사용한다.
+   */
+  override create(entityLike: DeepPartial<Entity>): Entity;
+  /**
+   * super.create를 override한 메서드로 uid를 생성한다.
+   * - 새 엔티티를 생성하고 지정된 객체의 모든 엔티티 속성을 새 엔티티로 복사합니다.
+   * - param에 uid가 있으면 parma의 uid를 사용한다.
+   */
+  override create(entityLikeArray: DeepPartial<Entity>[]): Entity[];
+  /**
+   * super.create를 override한 메서드로 uid를 생성한다.
+   * - 새 엔티티를 생성하고 지정된 객체의 모든 엔티티 속성을 새 엔티티로 복사합니다.
+   * - param에 uid가 있으면 parma의 uid를 사용한다.
+   */
+  override create(
+    params?: DeepPartial<Entity> | DeepPartial<Entity>[],
+  ): Entity | Entity[] {
+    const createWithGenerateUid = (param?: DeepPartial<Entity>) =>
+      super.create({ uid: this.generateUid(), ...param });
+
+    if (!params) {
+      return createWithGenerateUid();
+    }
+
+    if (Array.isArray(params)) {
+      return params.map(createWithGenerateUid);
+    }
+
+    return createWithGenerateUid(params);
   }
 }

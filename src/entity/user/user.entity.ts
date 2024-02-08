@@ -41,7 +41,7 @@ export class UserEntity extends BaseEntity {
   @ApiHideProperty()
   @Exclude()
   @DateValidator()
-  @Column('timestamptz', { comment: '마지막 접속일', default: () => 'NOW()' })
+  @Column('datetime', { comment: '마지막 접속일', default: () => 'NOW()' })
   accessedAt: Date;
 
   @ApiHideProperty()

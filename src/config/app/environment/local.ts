@@ -14,7 +14,8 @@ export const LocalConfig: AppConfig = {
   },
 
   database: {
-    type: 'postgres',
+    type: 'mysql',
+    connectorPackage: 'mysql2',
     host: process.env.DATABASE_HOST, // 개발
     port: +process.env.DATABASE_PORT,
     username: process.env.DATABASE_USER,
@@ -28,9 +29,9 @@ export const LocalConfig: AppConfig = {
     maxQueryExecutionTime:
       +process.env.DATABASE_MAX_QUERY_EXECUTION_TIME ?? 10000, // 10초
     extra: {
-      statement_timeout: +process.env.DATABASE_CONNECT_TIMEOUT ?? 60000, // 1분
-      min: +process.env.DATABASE_POOL_MIN_SIZE ?? 5,
-      max: +process.env.DATABASE_POOL_MAX_SIZE ?? 10,
+      idleTimeout: +process.env.DATABASE_IDLE_TIMEOUT ?? 60000, // 1분
+      connectionLimit: +process.env.DATABASE_CONNECTION_LIMIT ?? 5,
+      maxIdle: +process.env.DATABASE_MAX_IDLE ?? 10,
     },
   },
 

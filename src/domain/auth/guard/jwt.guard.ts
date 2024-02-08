@@ -22,7 +22,7 @@ export class JwtGuard extends BaseJwtGuard {
     const payload = this.authService.decodeToken(jwt);
     if (!payload) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
-    const userInfo = { id: payload.id, jwt };
+    const userInfo = { uid: payload.uid, id: payload.id, jwt };
     const isValid = await this.authService.isValid(userInfo);
     if (!isValid) throw new UnauthorizedException(errorMessage.E401_APP_001);
 
