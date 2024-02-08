@@ -59,7 +59,7 @@ export class AuthService extends AuthServiceUseCase {
     const user = await this.userRepository.findOneByPK(userInfo.id);
     if (!user) return false;
     if (user.token !== userInfo.jwt) return false;
-    await this.userRepository.updateProperty(user.id, {
+    await this.userRepository.updateOneBy(user.id, {
       accessedAt: new Date(),
     });
     return true;

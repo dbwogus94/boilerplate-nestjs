@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Patch,
   Post,
   UseGuards,
   UseInterceptors,
@@ -14,6 +15,7 @@ import { ApiControllerDocument, GetUserInfoDecorator } from '@app/common';
 import { DocumentHelper } from './document/document.decorator';
 import {
   GetUserResponseDTO,
+  PatchUserRequestDTO,
   PostUserRequestDTO,
   PostUserResponseDTO,
 } from './dto';
@@ -42,6 +44,17 @@ export class UserController {
     @GetUserInfoDecorator('id') userId: number,
   ): Promise<GetUserResponseDTO> {
     return this.userService.getUser(userId);
+  }
+
+  @DocumentHelper('patchUser')
+  @UseGuards(JwtGuard)
+  @Patch('/me')
+  @HttpCode(204)
+  async patchUser(
+    @GetUserInfoDecorator('id') userId: number,
+    @Body() postDto: PatchUserRequestDTO,
+  ): Promise<void> {
+    await this.userService.updateUser(userId, postDto);
   }
 
   @DocumentHelper('deleteUser')
