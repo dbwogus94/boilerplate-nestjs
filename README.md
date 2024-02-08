@@ -75,6 +75,10 @@ SLACK_VIEWER_URL_BY_SERVER_ERROR_ALERT=https://
 ## 프로젝트 실행 방법
 1. npm 모듈 설치 
 ```bash
+# package.json 기준으로 설치
+$ npm install
+
+# package-lock.json 기준으로 설치
 $ npm ci
 ```
 
@@ -96,3 +100,9 @@ $ npm run start:debug
 - api: [localhost:3000/api](http://localhost:3000/api)
 - swagger: [localhost:3000/docs](http://localhost:3000/docs)
 - swagger-json: [localhost:3000/docs-json](http://localhost:3000/docs-json)
+
+5. (optional) husky 설정
+```bash
+# husky 초기화
+npm run prepare 
+```
