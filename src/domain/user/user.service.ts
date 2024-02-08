@@ -16,12 +16,12 @@ export abstract class UserServiceUseCase {
   abstract createUser(
     postDto: PostUserRequestDTO,
   ): Promise<PostUserResponseDTO>;
-  abstract getUser(userId: number): Promise<GetUserResponseDTO>;
+  abstract getUser(userUid: string): Promise<GetUserResponseDTO>;
   abstract updateUser(
-    userId: number,
+    userUid: string,
     postDto: PatchUserRequestDTO,
   ): Promise<void>;
-  abstract softRemoveUser(userId: number): Promise<void>;
+  abstract softRemoveUser(userUid: string): Promise<void>;
 }
 
 @Injectable()
@@ -45,6 +45,7 @@ export class UserService extends UserServiceUseCase {
       const newUser = await txUserRepo.createOne(postDto);
 
       const token = this.authService.issueToken({
+        uid: newUser.uid,
         id: newUser.id,
       });
       const nickname = postDto.nickname ?? newUser.generateNickname().nickname;
@@ -63,8 +64,8 @@ export class UserService extends UserServiceUseCase {
     }
   }
 
-  async getUser(userId: number): Promise<GetUserResponseDTO> {
-    const user = await this.userRepo.findOneByPK(userId);
+  async getUser(userUid: string): Promise<GetUserResponseDTO> {
+    const user = await this.userRepo.findOneByPK(userUid);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
     return Util.toInstance(GetUserResponseDTO, {
       ...user.props,
@@ -72,17 +73,17 @@ export class UserService extends UserServiceUseCase {
   }
 
   async updateUser(
-    userId: number,
+    userUid: string,
     postDto: PatchUserRequestDTO,
   ): Promise<void> {
-    const user = await this.userRepo.findOneByPK(userId);
+    const user = await this.userRepo.findOneByPK(userUid);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
-    await this.userRepo.updateOneBy(userId, { ...postDto });
+    await this.userRepo.updateOneBy(userUid, { ...postDto });
   }
 
-  async softRemoveUser(userId: number): Promise<void> {
-    const user = await this.userRepo.findOneByPK(userId);
+  async softRemoveUser(userUid: string): Promise<void> {
+    const user = await this.userRepo.findOneByPK(userUid);
     if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
-    await this.userRepo.softDelete(userId);
+    await this.userRepo.softDelete(userUid);
   }
 }

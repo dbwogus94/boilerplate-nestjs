@@ -41,7 +41,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Get('/me')
   async getUser(
-    @GetUserInfoDecorator('id') userId: number,
+    @GetUserInfoDecorator('uid') userId: string,
   ): Promise<GetUserResponseDTO> {
     return this.userService.getUser(userId);
   }
@@ -51,7 +51,7 @@ export class UserController {
   @Patch('/me')
   @HttpCode(204)
   async patchUser(
-    @GetUserInfoDecorator('id') userId: number,
+    @GetUserInfoDecorator('uid') userId: string,
     @Body() postDto: PatchUserRequestDTO,
   ): Promise<void> {
     await this.userService.updateUser(userId, postDto);
@@ -61,7 +61,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Delete('/me')
   @HttpCode(204)
-  async deleteUser(@GetUserInfoDecorator('id') userId: number): Promise<void> {
+  async deleteUser(@GetUserInfoDecorator('uid') userId: string): Promise<void> {
     await this.userService.softRemoveUser(userId);
   }
 }

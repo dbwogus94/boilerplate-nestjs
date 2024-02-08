@@ -40,8 +40,9 @@ export const defaultPlainToInstanceOptions = {
   excludeExtraneousValues: true,
 };
 
-export const defaultResponseProperties: ['id', 'createdAt', 'updatedAt'] = [
+export const defaultResponseProperties: [
+  'uid',
   'id',
   'createdAt',
   'updatedAt',
-];
+] = ['uid', 'id', 'createdAt', 'updatedAt'];

@@ -7,14 +7,14 @@ import { User, UserEntityMapper } from './domain';
 import { PostUserRequestDTO } from './dto';
 
 export abstract class UserRepositoryPort extends BaseRepository<UserEntity> {
-  abstract findOneByPK(userId: number): Promise<User | null>;
+  abstract findOneByPK(userUid: string): Promise<User | null>;
   abstract createOne(postDto: PostUserRequestDTO): Promise<User>;
   abstract updateOne(
     originUser: User,
     properties: Partial<UserEntity>,
   ): Promise<User>;
   abstract updateOneBy(
-    userId: number,
+    userUid: string,
     properties: Partial<UserEntity>,
   ): Promise<void>;
 }
@@ -27,8 +27,8 @@ export class UserRepository extends UserRepositoryPort {
     super(UserEntity, manager);
   }
 
-  async findOneByPK(userId: number): Promise<User | null> {
-    const user = await this.findOneBy({ id: userId });
+  async findOneByPK(userUid: string): Promise<User | null> {
+    const user = await this.findOneBy({ uid: userUid });
     return !!user ? UserEntityMapper.toDomain(user) : null;
   }
 
@@ -45,9 +45,9 @@ export class UserRepository extends UserRepositoryPort {
   }
 
   async updateOneBy(
-    userId: number,
+    userUid: string,
     properties: Partial<UserEntity>,
   ): Promise<void> {
-    await this.update(userId, { ...properties });
+    await this.update(userUid, { ...properties });
   }
 }
