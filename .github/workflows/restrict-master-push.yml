@@ -1,0 +1,15 @@
+name: Restrict merge from develop to main
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  block_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block push to master/main
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+        run: echo "Pushing to master/main branch is not allowed." && exit 1
