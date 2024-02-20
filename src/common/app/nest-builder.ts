@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
 import { json } from 'express';
-import helmet from 'helmet';
+import helmet, { HelmetOptions } from 'helmet';
 
 import { CorsConfig, SentryConfig } from '@app/config';
 import { httpLogger } from '@app/custom';
@@ -23,6 +23,20 @@ type BuildSwaggerType = typeof buildSwagger;
 type SetMiddlewareOptions = { httpLogging?: boolean; globalPrefix?: string };
 type SetSwaggerOptions = { docsPath: string };
 
+/**
+ * TODO: nest의 경우 미들웨어 셋팅 순서가 swagger 빌드에 영향을 준다.
+ * - 이것을 해결하기 위해 NestBuilder#runServer()에서 미들웨어와 스웨거 빌드를 순차적으로 적용하게 수정하자.
+ * - ex)
+ *   1. set 메서드에 따라 배열에 담는다.
+ *   2. NestBuilder#runServer() 메서드에서 서버 실행 전 셋팅된 미들웨어를 순차로 적용시킨다.
+ * ```
+ *   builder
+ *     .setMiddleware({ globalPrefix: '/api', httpLogging: true })
+ *     .setSwagger(buildSwagger, { docsPath: '/docs' })
+ *     .setSecurity()
+ *     .runServer();
+ * ```
+ */
 export class NestBuilder {
   private _isRunning: boolean;
 
@@ -67,6 +81,18 @@ export class NestBuilder {
   }
 
   /**
+   * 보안 설정(helmet) 설정
+   * - swagger-ui를 http 배포환경에서 사용하려면 swagger ui 빌드 후에 선언되어야 한다.
+   * @param options
+   * @returns
+   * @see https://github.com/scottie1984/swagger-ui-express/issues/212#issuecomment-825803088
+   */
+  setSecurity(options?: Readonly<HelmetOptions>) {
+    this._app.use(helmet(options));
+    return this;
+  }
+
+  /**
    * Express middleware 셋팅
    * @param options
    * @param options.globalPrifix - 사용하는 경우 반드시 Swagger 설정인 setDocs보다 먼저 셋팅되어야 한다.
@@ -83,14 +109,12 @@ export class NestBuilder {
     if (!!options.globalPrefix) {
       this._app.setGlobalPrefix(options.globalPrefix); // Note: Swagger 빌드전에 적용해야 docs에 적용된다.
     }
-
     const { origin, ...other } = this._configService.get<CorsConfig>('cors');
     this._app.enableCors({
       ...other,
       origin: typeof origin === 'string' ? origin.split(',') : origin,
     });
     this._app.use(json({ limit: '50mb' }));
-    this._app.use(helmet());
     return this;
   }
 
