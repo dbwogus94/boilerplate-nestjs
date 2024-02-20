@@ -17,11 +17,13 @@ async function bootstrap() {
   return EnvUtil.isProd()
     ? await builder //
         .setMiddleware({ globalPrefix: '/api', httpLogging: false })
+        .setSecurity()
         .initSentry()
         .runServer()
     : await builder
         .setMiddleware({ globalPrefix: '/api', httpLogging: true })
         .setSwagger(buildSwagger, { docsPath: '/docs' })
+        .setSecurity()
         .runServer();
 }
 
