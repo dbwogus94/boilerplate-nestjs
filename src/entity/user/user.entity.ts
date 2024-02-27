@@ -1,8 +1,6 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
 import { Column, Entity } from 'typeorm';
 
-import { DateValidator, StringValidator } from '@app/common';
+import { RestApiHideProperty, RestApiStringProperty } from '@app/common';
 import { BaseEntity } from '../base.entity';
 
 @Entity('user')
@@ -12,14 +10,11 @@ export class UserEntity extends BaseEntity {
    * - 000 + id,
    * - default 0000
    */
-  @ApiProperty({
+  @RestApiStringProperty({
     description: '닉네임',
-    type: String,
-    default: '닉네임',
     maxLength: 50,
+    default: '0000',
   })
-  @Expose()
-  @StringValidator({ maxLength: 50 })
   @Column('varchar', { comment: '닉네임', length: 50, default: '0000' })
   nickname: string;
 
@@ -27,9 +22,7 @@ export class UserEntity extends BaseEntity {
    * JWT 토큰
    * - defalt ''
    */
-  @ApiHideProperty()
-  @Exclude()
-  @StringValidator({ maxLength: 300 })
+  @RestApiHideProperty()
   @Column('varchar', { comment: 'JWT 토큰', length: 300, default: '' })
   token: string;
 
@@ -38,14 +31,11 @@ export class UserEntity extends BaseEntity {
    * - mvp에서는 생성시 추가
    * - default now
    */
-  @ApiHideProperty()
-  @Exclude()
-  @DateValidator()
+  @RestApiHideProperty()
   @Column('timestamptz', { comment: '마지막 접속일', default: () => 'NOW()' })
   accessedAt: Date;
 
-  @ApiHideProperty()
-  @Expose()
+  @RestApiHideProperty()
   @Column('boolean', { comment: '약관 동의', default: false })
   agreementTerms: true;
 }
