@@ -20,13 +20,17 @@ class PoolOptions implements Mysql2PoolOptions {
   waitForConnections? = true; // true: 최대 커넥션을 모두 소비하면 요청을 대기열에 넣는다.
 
   @IntValidator()
-  idleTimeout: number; // 대기열에 들어간 쿼리 강제 취소 시간 '0'이면 무제한. ex) 60000 = 1분 이상 쿼리 강제 취소
-
-  @IntValidator()
   connectionLimit: number; //
 
   @IntValidator()
-  maxIdle: number; // 대기열에 들어갈 최대 커넥션 수 (Default: same as `connectionLimit`)
+  queueLimit?: number = 0; // 최대 대기열 수, 기본 0으로 무제한
+
+  /* 작동하지 않음  */
+  // @IntValidator()
+  // idleTimeout: number; // 대기열에 들어간 쿼리 강제 취소 시간 '0'이면 무제한. ex) 60000 = 1분 이상 쿼리 강제 취소
+
+  // @IntValidator()
+  // maxIdle: number; // 대기열에 들어갈 최대 커넥션 수 (Default: same as `connectionLimit`)
 }
 
 export class DatabaseConfig implements MysqlConnectionOptions {

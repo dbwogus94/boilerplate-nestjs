@@ -9,7 +9,7 @@ import {
   PostUserResponseDTO,
 } from './dto';
 import { UserRepositoryPort } from './user.repository';
-import { errorMessage } from '@app/custom';
+import { ErrorMessage } from '@app/custom';
 import { Util } from '@app/common';
 
 export abstract class UserServiceUseCase {
@@ -66,7 +66,7 @@ export class UserService extends UserServiceUseCase {
 
   async getUser(userUid: string): Promise<GetUserResponseDTO> {
     const user = await this.userRepo.findOneByPK(userUid);
-    if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
+    if (!user) throw new NotFoundException(ErrorMessage.E404_APP_NOT_FOUND);
     return Util.toInstance(GetUserResponseDTO, {
       ...user.props,
     });
@@ -77,13 +77,13 @@ export class UserService extends UserServiceUseCase {
     postDto: PatchUserRequestDTO,
   ): Promise<void> {
     const user = await this.userRepo.findOneByPK(userUid);
-    if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
+    if (!user) throw new NotFoundException(ErrorMessage.E404_APP_NOT_FOUND);
     await this.userRepo.updateOneBy(userUid, { ...postDto });
   }
 
   async softRemoveUser(userUid: string): Promise<void> {
     const user = await this.userRepo.findOneByPK(userUid);
-    if (!user) throw new NotFoundException(errorMessage.E404_APP_001);
+    if (!user) throw new NotFoundException(ErrorMessage.E404_APP_NOT_FOUND);
     await this.userRepo.softDelete(userUid);
   }
 }
