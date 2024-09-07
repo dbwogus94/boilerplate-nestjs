@@ -1,4 +1,8 @@
-import { DEFALUT_APP_NAME, USER_ACCESS_TOKEN } from '@app/common';
+import {
+  DatabaseLogger,
+  DEFALUT_APP_NAME,
+  USER_ACCESS_TOKEN,
+} from '@app/common';
 import { AppConfig } from '../app.config';
 
 export const LocalConfig: AppConfig = {
@@ -21,17 +25,16 @@ export const LocalConfig: AppConfig = {
     username: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
-    logging: process.env.DATABASE_LOG as any,
+    logging: DatabaseLogger.logLevelParser(process.env.DATABASE_LOG),
     entities: [`${__dirname}/../../../entity/**/*.entity{.ts,.js}`],
     migrationsTableName: 'migrations',
 
-    /* DB 가용성에 따라 변경 해야한다. */
     maxQueryExecutionTime:
       +process.env.DATABASE_MAX_QUERY_EXECUTION_TIME ?? 10000, // 10초
+
+    /* DB 가용성에 따라 변경 해야한다. */
     extra: {
-      idleTimeout: +process.env.DATABASE_IDLE_TIMEOUT ?? 60000, // 1분
       connectionLimit: +process.env.DATABASE_CONNECTION_LIMIT ?? 5,
-      maxIdle: +process.env.DATABASE_MAX_IDLE ?? 10,
     },
   },
 
