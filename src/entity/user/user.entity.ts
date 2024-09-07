@@ -32,7 +32,7 @@ export class UserEntity extends BaseEntity {
    * - default now
    */
   @RestApiHideProperty()
-  @Column('timestamptz', { comment: '마지막 접속일', default: () => 'NOW()' })
+  @Column('datetime', { comment: '마지막 접속일', default: () => 'NOW()' })
   accessedAt: Date;
 
   @RestApiHideProperty()
